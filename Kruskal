@@ -1,0 +1,83 @@
+//Kruskal求最小生成树
+//等价类
+class UFSets{
+	private:
+	  int n;                            //等价类中元素个数
+	  int* root;                        //root[i]表示元素i所在的等价类的代表元素编号
+	  int* next;                        //next[i]表示在等价类中，i的后面元素编号
+	  int* length;                      //length[i]表示i所代表的等价类的元素个数
+	public:
+	  UFSets(int size){                 //初始size个元素的等价类 
+		  n = size;
+		  root = new int[n];
+			next = new int[n];
+			length = new int[n];
+		  for(int i = 0;i < n;i++){
+			  root[i] = i;
+			  next[i] = i;        //各个元素独自成为一个等价类
+			  length[i] = 1; 
+		  }
+	  } 
+	  void swap(int & i,int & j)
+    {
+        int temp;
+        temp = i;
+        i = j;
+        j = temp;
+    }
+	  int Find(int v){
+		  return root[v];
+	  }
+	  void Union(int v,int u);          //合并v和u所在的等价类，将元素多的合并到元素少的等价类中 
+};
+
+void UFSets::Union(int v,int u){
+	if(root[u] == root[v])             //如果v和u在一个等价类中则返回 
+	  return;
+	else if(length[root[v]] < length[root[u]]){//将v所在等价类元素合并到u所在等价类，并将u所在等价类的代表元素作为//合并后的等//价类代表元 
+		int rt = root[v];                  //获取v所在等价类的代表元素
+		length[root[u]] += length[rt]; //修改u所在等价类的元素个数
+		root[rt] = root[u];            //修改v所在等价类的各个元素的代表元素信息
+		for(int j = next[rt];j != rt;j = next[j])
+		  root[j] = root[u];
+		swap(next[rt],next[root[u]]);//将两个等价类的元素连接起来 
+	}
+	else{                            //length[root[v]]>=length[root[u]]
+		int rt = root[u];
+		length[root[v]] += length[rt];
+		root[rt] = root[v];
+		for(int j = next[rt];j != rt;j = next[j])
+		  root[j] = root[v];
+		swap(next[rt],next[root[v]]);
+	}                          
+
+} 
+
+//Kruskal算法
+Edge * Kruskal(Graph& G){ //求含有n个顶点、e条边的连通图G的最小生成树 
+	int n = G.vertexNum;
+	UFSets set(n);                   //定义n个结点的等价类
+	Edge *MST = new Edge[n-1];         //记录最小生成树的边
+	Heap<Edge> H(G.edgeNum);
+	Edge edge; 
+	for(int i = 0;i < G.vertexNum;i++){  //将图的所有边记录在堆中 
+		for(edge = G.FirstEdge(i);G.IsEdge(edge);edge = G.NextEdge(edge)){
+			if(G.StartVertex(edge) < G.EndVertex(edge)){//避免无向图中的边被重复考察 
+				H.Insert(edge);
+			}
+		} 
+	}
+	int edgeNum = 0;                  //生成树的边个数
+	while(edgeNum < n-1){            //n个结点的连通图的生成树有n-1条边 
+		if(!H.isEmpty()){
+			H.Delete(edge);     //找到权重最小的未处理的边
+			int v = edge.start;
+			int u = edge.end;
+			if(set.Find(v) != set.Find(u)){//判断该边关联的顶点是否在一个连通分量 
+				set.Union(v,u);     //合并两个顶点所在的等价类
+				MST[edgeNum++] = edge;//将符合条件的边添加到生成树的边集合中 
+			} 
+		}
+	} 
+	return MST;
+}
