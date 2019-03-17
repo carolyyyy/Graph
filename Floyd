@@ -1,0 +1,30 @@
+//顶点之间最短路径
+void Floyd(int **Adj,int **Path){
+	int i,j,v;                    //i,j是计数器，v记录相应顶点 
+	int n = vertexNum;
+	for(i = 0;i < n;i++){
+		for(j = 0;j < n;j++){
+			if(i == j){
+				Adj[i][j] = 0;
+				Path[i][j] = i;
+			}
+			else{
+				Adj[i][j] = 9999;
+				Path[i][j] = -1;
+			}
+		}
+	}
+	for(v = 0;v < n;v++){            //检查各条边，将边(v,u)的值作为Adj[v,u],v作为Path[u]的值 
+		for(Edge e = FirstEdge(v);IsEdge(e);e = NextEdge(e)){
+			Adj[v][e.end] = Weight(e);
+			Path[v][e.end] = v;
+		}
+	}
+	for(v = 0;v < n;v++)             //如果两个顶点i,j间的最短路径经过顶点v,且有Adj[i][j]>(Adj[i][v]+Adj[v][j]),则更新Adj[i][j],Path[i][j] 
+	for(i = 0;i < n;i++)
+	for(j = 0;j < n;j++)
+	if(Adj[i][j] > (Adj[i][v]+Adj[v][j])){
+		Adj[i][j] = Adj[i][v]+Adj[v][j];//更新i,j之间经过的点编号不超过v的最短路径长度 
+		Path[i][j] = v;        //更新i,j之间经过的点编号不超过v的最短路径上j的前驱 
+	}
+}
