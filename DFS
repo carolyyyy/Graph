@@ -2,7 +2,7 @@
 void DFS(Graph& G, int v)  {       	// 深度优先搜索的递归实现
     	G.Mark[v] = VISITED;         	// 将标记位设置为VISITED
     	Visit(G,v);				// 访问顶点v
-	    for (Edge e = G.FirstEdge(v); G.IsEdge(e); e = G.NextEdge(e))
-        if (G.Mark[G.ToVertex(e)] == UNVISITED)
-	        DFS(G, G.ToVertex(e));
+	for (Edge e = G.FirstEdge(v); G.IsEdge(e); e = G.NextEdge(e))
+        	if (G.Mark[G.ToVertex(e)] == UNVISITED)
+	        	DFS(G, G.ToVertex(e));
 }
