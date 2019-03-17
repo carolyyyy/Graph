@@ -1,0 +1,31 @@
+//Dijkstra单源最短路径
+void Dijkstra(Graph &G,int s,int D[],int Path[]){
+	int n = G.vertexNum;
+	int i,j;
+	for(i = 0;i < n;i++){
+		G.Mark[i] = 0;
+		D[i] = 9999;
+		Path[i] = -1;                 //标记此时不存在s到i的路径 
+	}
+	G.Mark[s] = 1;
+	D[s] = 0;
+	Path[s] = s;
+	for(i = 0;i < n;i++){               //找到一条最短特殊路径，即min{D[j]|G.Mark[j]==0,0<=j<n} 
+		int min = 9999;
+		int k = 0;
+		for(j = 0;j < n;j++){
+			if(G.Mark[j]==0 && min>D[j]){
+				min = D[j];
+				k = j;
+			 }
+	  }
+		G.Mark[k] = 1;               //已确定s到k的最短路径
+		for(Edge e = G.FirstEdge(k);G.IsEdge(e);e = G.NextEdge(e)){//利用k更新到其余未访问顶点的最短特殊路径 
+			int endVertex = e.end;
+			if(G.Mark[endVertex]==0 && D[endVertex]>(D[k]+e.weight)){//更新到endVertex的最短特殊路径 
+				D[endVertex] = D[k] + e.weight;
+				Path[endVertex] = k; 
+			} 
+		} 
+	}
+}
