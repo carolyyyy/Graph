@@ -12,15 +12,15 @@ void BFS(Graph& G, int V){//初始化广度优先周游要用到的队列
       int V=Q.front();   //顶部元素	
       Q.pop();                //出队	
 
-	    for(Edge e=G.FirstEdge(V);G.IsEdge(e);e=G.NextEdge(e))//将与该点相邻的每一个未访问结点都入队
+      for(Edge e=G.FirstEdge(V);G.IsEdge(e);e=G.NextEdge(e))//将与该点相邻的每一个未访问结点都入队
       {
         if(G.Mark[G.ToVertex(e)]== UNVISITED)
         {					    
            G.Mark[G.ToVertex(e)]=VISITED;
            Visit(G, G.ToVertex(e));
          
-		       Q.push(G.ToVertex(e));        //入队   
+           Q.push(G.ToVertex(e));        //入队   
         }	
-	    }
+      }
     }
 } 
